@@ -1,11 +1,11 @@
 package de.munich.softwerkskammer;
 
-public class Game {
-    private int rolls[] = new int[21];
-    private int currentRoll = 0;
+public class BowlingGame {
+
+    FrameChain frameChain = new FrameChain();
 
     public void roll(int pins) {
-        rolls[currentRoll++] = pins;
+        frameChain.roll(pins);
     }
 
     public int score() {
@@ -27,23 +27,23 @@ public class Game {
     }
 
     private boolean isStrike(int frameIndex) {
-        return rolls[frameIndex] == 10;
+        return frameChain.numberOfPinsForRoll(frameIndex) == 10;
     }
 
     private boolean isSpare(int frameIndex) {
-        return rolls[frameIndex] + rolls[frameIndex + 1] == 10;
+        return frameChain.numberOfPinsForRoll(frameIndex) + frameChain.numberOfPinsForRoll(frameIndex + 1) == 10;
     }
 
     private int strikeBonus(int frameIndex) {
-        return rolls[frameIndex + 1] + rolls[frameIndex + 2];
+        return frameChain.numberOfPinsForRoll(frameIndex + 1) + frameChain.numberOfPinsForRoll(frameIndex + 2);
     }
 
     private int spareBonus(int frameIndex) {
-        return rolls[frameIndex + 2];
+        return frameChain.numberOfPinsForRoll(frameIndex + 2);
     }
 
     private int sumOfBallsInFrame(int frameIndex) {
-        return rolls[frameIndex] + rolls[frameIndex + 1];
+        return frameChain.numberOfPinsForRoll(frameIndex) + frameChain.numberOfPinsForRoll(frameIndex + 1);
     }
 
 }
