@@ -1,28 +1,27 @@
 package de.munich.softwerkskammer;
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Test;
+
+import java.util.stream.IntStream;
+
+import static org.junit.Assert.assertEquals;
 
 public class FrameTest {
 
     @Test
     public void nextToLastFrameReturnsCorrectStrikeScore() {
-        // next to last frame
-        Frame frame = new Frame(9);
-        frame.roll(10);
-        // last frame
-        frame.roll(10);
-        frame.roll(10);
-        frame.roll(10);
-
+        Frame frame = createNextToLastFrameWithRolls(10, 10, 10, 10);
         assertEquals(30, frame.score());
     }
 
     @Test(expected = RuntimeException.class)
     public void firstTwoRollsCombinedMayNotHaveMoreThanTenPins() {
-        Frame frame = new Frame(1);
-        frame.roll(7);
-        frame.roll(8);
+        createNextToLastFrameWithRolls(7, 8);
+    }
+
+    private Frame createNextToLastFrameWithRolls(int... rolls) {
+        Frame frame = new Frame(9);
+        IntStream.of(rolls).forEach(roll -> frame.roll(roll));
+        return frame;
     }
 }

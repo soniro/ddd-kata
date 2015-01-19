@@ -1,8 +1,10 @@
 package de.munich.softwerkskammer;
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Test;
+
+import java.util.stream.IntStream;
+
+import static org.junit.Assert.assertEquals;
 
 public class LastFrameTest {
 
@@ -10,40 +12,37 @@ public class LastFrameTest {
 
     @Test
     public void lastFrameAcceptsTwoExtraRollIfStrike() {
-        lastFrame.roll(10);
-        lastFrame.roll(10);
-        lastFrame.roll(10);
+        roll(10, 10, 10);
         assertEquals(30, lastFrame.score());
     }
 
     @Test
     public void lastFrameAcceptsOneExtraRollIfSpare() {
-        lastFrame.roll(4);
-        lastFrame.roll(6);
-        lastFrame.roll(2);
+        roll(4, 6, 2);
         assertEquals(12, lastFrame.score());
     }
 
     @Test(expected = RuntimeException.class)
     public void lastFrameAcceptsNoExtraRollIfNoStrikeOrSpare() {
-        lastFrame.roll(3);
-        lastFrame.roll(5);
-        lastFrame.roll(2);
+        roll(3, 5, 2);
     }
 
     @Test(expected = RuntimeException.class)
     public void firstTwoRollsCombinedMayNotHaveMoreThanTenPins() {
-        lastFrame.roll(7);
-        lastFrame.roll(8);
+        roll(7, 8);
     }
 
     @Test
     public void rollSmallerEqualsTenIsValid() {
-        lastFrame.roll(10);
+        roll(10);
     }
 
     @Test(expected = RuntimeException.class)
     public void rollGreaterTenIsInvalid() {
-        lastFrame.roll(11);
+        roll(11);
+    }
+
+    private void roll(int... rolls) {
+        IntStream.of(rolls).forEach(roll -> lastFrame.roll(roll));
     }
 }

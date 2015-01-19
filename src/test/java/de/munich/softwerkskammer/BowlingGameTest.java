@@ -28,6 +28,12 @@ public class BowlingGameTest {
     }
 
     @Test
+    public void incompleteGameShouldReturnIntermediateScoreStrike() {
+        bowlingGame.roll(10);
+        assertEquals(10, bowlingGame.score());
+    }
+
+    @Test
     public void incompleteGameShouldReturnIntermediateScore() {
         rollPinsSeveralTimes(10, 5);
         assertEquals(120, bowlingGame.score());

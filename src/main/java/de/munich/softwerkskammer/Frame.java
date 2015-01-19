@@ -1,19 +1,17 @@
 package de.munich.softwerkskammer;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Frame {
 
     protected static final int MAXIMUM_NUMBER_OF_PINS = 10;
     protected static final int MAXIMUM_NUMBER_OF_FRAMES = 10;
 
-    final List<Integer> rolls = new ArrayList<>(2);
     final int frameNumber;
+    Rolls rolls;
     Frame nextFrame;
 
     public Frame(int frameNumber) {
         this.frameNumber = frameNumber;
+        this.rolls = new Rolls();
     }
 
     public void roll(int pins) {
@@ -27,7 +25,7 @@ public class Frame {
         if (strike() && nextFrame ==null) return MAXIMUM_NUMBER_OF_PINS;
         else if (strike()) return MAXIMUM_NUMBER_OF_PINS + nextFrame.strikeBonus();
         else if (spare()) return MAXIMUM_NUMBER_OF_PINS + nextFrame.spareBonus();
-        else return sumOfRolls();
+        else return rolls.sum();
     }
 
     private void initNextFrame() {
@@ -36,31 +34,25 @@ public class Frame {
     }
 
     protected boolean frameComplete() {
-        return strike() || rolls.size() == 2;
+        return strike() || rolls.full();
     }
 
     protected boolean strike() {
-        return !rolls.isEmpty() && rolls.get(0) == MAXIMUM_NUMBER_OF_PINS;
+        return rolls.first() == MAXIMUM_NUMBER_OF_PINS;
     }
 
     protected boolean spare() {
-        return !strike() && frameComplete() && sumOfRolls() == MAXIMUM_NUMBER_OF_PINS;
+        return !strike() && rolls.sum() == MAXIMUM_NUMBER_OF_PINS;
     }
 
     protected int strikeBonus() {
         if (strike() && nextFrame == null) return MAXIMUM_NUMBER_OF_PINS;
         else if (strike()) return MAXIMUM_NUMBER_OF_PINS + nextFrame.spareBonus();
-        else return sumOfRolls();
+        else return rolls.sum();
     }
 
     private int spareBonus() {
-        return rolls.get(0);
-    }
-
-    protected int sumOfRolls() {
-        if (rolls.size() == 0) return 0;
-        if (rolls.size() == 1) return rolls.get(0);
-        else return rolls.get(0) + rolls.get(1);
+        return rolls.first();
     }
 
     public Frame nextFrame() {
@@ -72,6 +64,6 @@ public class Frame {
     }
 
     protected boolean rollIsValid(int pins) {
-        return pins <= MAXIMUM_NUMBER_OF_PINS && (rolls.isEmpty() || rolls.get(0) + pins <= MAXIMUM_NUMBER_OF_PINS);
+        return pins <= MAXIMUM_NUMBER_OF_PINS && rolls.first() + pins <= MAXIMUM_NUMBER_OF_PINS;
     }
 }

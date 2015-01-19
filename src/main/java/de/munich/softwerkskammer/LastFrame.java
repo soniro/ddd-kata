@@ -4,6 +4,7 @@ public class LastFrame extends Frame {
 
     public LastFrame() {
         super(MAXIMUM_NUMBER_OF_FRAMES);
+        rolls = new Rolls(1);
     }
 
     @Override
@@ -15,30 +16,27 @@ public class LastFrame extends Frame {
 
     @Override
     protected boolean frameComplete() {
-        int needsExtraRoll = needsExtraRoll() ? 1 : 0;
-        return rolls.size() == 2 + needsExtraRoll;
+        return needsExtraRoll() ? rolls.fullWithAdditionalRowAllowed() : rolls.full();
     }
 
     @Override
     public int score() {
-        return rolls.stream().mapToInt(i -> i).sum();
+        return rolls.sumWithAdditionalRolls();
     }
 
     @Override
     protected boolean spare() {
-        return rolls.size() >= 2 && sumOfRolls() == MAXIMUM_NUMBER_OF_PINS;
+        return (rolls.full() || rolls.fullWithAdditionalRowAllowed()) && rolls.sum() == MAXIMUM_NUMBER_OF_PINS;
     }
 
     @Override
     protected int strikeBonus() {
-        if (rolls.size() == 0) return 0;
-        if (rolls.size() == 1) return rolls.get(0);
-        else return sumOfRolls();
+        return rolls.sum();
     }
 
     @Override
     protected boolean rollIsValid(int pins) {
-       return pins <= MAXIMUM_NUMBER_OF_PINS && (rolls.isEmpty() || rolls.size() == 2 || strike() || rolls.get(0) + pins <= MAXIMUM_NUMBER_OF_PINS);
+       return pins <= MAXIMUM_NUMBER_OF_PINS && (spare() || strike() || rolls.first() + pins <= MAXIMUM_NUMBER_OF_PINS);
     }
 
     private boolean needsExtraRoll() {
